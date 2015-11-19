@@ -4,5 +4,4 @@ var config = module.exports = {
 }
 
 config.path = './' + config.repo.split('/').pop()
-config.distBranch = config.branch + '-dist'
 config.remote = 'git@github.com:' + config.repo + '.git'

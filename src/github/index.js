@@ -30,7 +30,7 @@ var cloneRepo = function(isCloned){
 		return true
 	}
 	var remote = config.remote
-	var branch = config.distBranch
+	var branch = config.branch
 	var cmd = `git clone --branch=${branch} --depth=10 ${remote}`
 	console.log(`$ ${cmd}`)
 	return exec(cmd, true)
@@ -52,7 +52,7 @@ var changeDirBack = function(){
 }
 
 var pullBranch = function(shouldPull){
-	var cmd = `git pull origin ${config.distBranch}`
+	var cmd = `git pull origin ${config.branch}`
 	console.log(`$ ${cmd}`)
 	return exec(cmd, true)
 }
