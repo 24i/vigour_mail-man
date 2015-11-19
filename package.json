@@ -1,13 +1,13 @@
 {
-  "name": "repo-manager",
-  "version": "0.0.1",
-  "description": "",
+  "name": "mail-man",
+  "version": "0.1.0",
+  "description": "delivers your packages",
   "main": "src/index.js",
   "scripts": {
     "start": "node index.js",
     "test": "gaston test"
   },
-  "author": "",
+  "author": "dev@vigour.io",
   "license": "ISC",
   "dependencies": {
     "npmlog": "^2.0.0",
