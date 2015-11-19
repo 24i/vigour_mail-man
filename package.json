@@ -1,0 +1,19 @@
+{
+  "name": "repo-manager",
+  "version": "0.0.1",
+  "description": "",
+  "main": "src/index.js",
+  "scripts": {
+    "start": "node index.js",
+    "test": "gaston test"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "npmlog": "^2.0.0",
+    "vigour-fs-promised": "^2.0.1"
+  },
+  "devDependencies": {
+    "npmlog": "^2.0.0"
+  }
+}
