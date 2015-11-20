@@ -48,7 +48,7 @@ var changeDir = function(){
 }
 
 var changeDirBack = function(){
-	console.log('$ cd ${pwd}')
+	console.log(`$ cd ${pwd}`)
 	return process.chdir(pwd)
 }
 
