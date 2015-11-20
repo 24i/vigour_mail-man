@@ -3,11 +3,12 @@ var fs = require('vigour-fs-promised')
 var log = require('npmlog')
 var exec = require('../utils/exec')
 var config
+var pwd
 
 var github = module.exports = {
 	init: function(cfg){
+		pwd = process.cwd()
 		config = cfg
-		console.log(config)
 	}, 
 	clone: function(){
 		return checkIfRepoCloned()
@@ -31,7 +32,7 @@ var cloneRepo = function(isCloned){
 	}
 	var remote = config.remote
 	var branch = config.branch
-	var cmd = `git clone --branch=${branch} --depth=10 ${remote}`
+	var cmd = `git clone --branch=${branch} --depth=10 ${remote} ${config.path}`
 	console.log(`$ ${cmd}`)
 	return exec(cmd, true)
 }
@@ -47,8 +48,8 @@ var changeDir = function(){
 }
 
 var changeDirBack = function(){
-	console.log('$ cd ..')
-	return process.chdir('..')
+	console.log('$ cd ${pwd}')
+	return process.chdir(pwd)
 }
 
 var pullBranch = function(shouldPull){
