@@ -17,7 +17,10 @@ var github = module.exports = {
 	update: function(){
 		changeDir()
 		return pullBranch()
-		// .then(npmInstall)
+		.then(npmInstall)
+		.then(runTests)
+		.then(runBuild)
+		.then(runDist)
 		.then(changeDirBack)
 	}
 }
@@ -40,6 +43,18 @@ var cloneRepo = function(isCloned){
 var npmInstall = function(){
 	console.log('$ npm update')
 	return exec('npm update', true)
+}
+
+var runTests = function(){
+	return exec('npm run test', true)
+}
+
+var runBuild = function(){
+	return exec('npm run build', true)
+}
+
+var runDist = function(){
+	return exec('npm run dist', true)
 }
 
 var changeDir = function(){
