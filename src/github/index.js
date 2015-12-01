@@ -13,6 +13,9 @@ var github = module.exports = {
 	clone: function(){
 		return checkIfRepoCloned()
 			.then(cloneRepo)
+			.then(changeDir)
+			.then(installGaston)
+			.then(changeDirBack)
 	},
 	update: function(){
 		changeDir()
@@ -43,6 +46,10 @@ var cloneRepo = function(isCloned){
 var npmInstall = function(){
 	console.log('$ npm update')
 	return exec('npm update', true)
+}
+
+var installGaston = function(){
+	return exec('npm install gaston')
 }
 
 var runTests = function(){
