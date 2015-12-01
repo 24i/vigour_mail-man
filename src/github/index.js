@@ -13,13 +13,12 @@ var github = module.exports = {
 	clone: function(){
 		return checkIfRepoCloned()
 			.then(cloneRepo)
-			.then(changeDir)
-			.then(installGaston)
-			.then(changeDirBack)
 	},
 	update: function(){
 		changeDir()
 		return pullBranch()
+		.then(removeNodeModules)
+		.then(installGaston)
 		.then(npmInstall)
 		.then(runTests)
 		.then(runBuild)
@@ -43,13 +42,19 @@ var cloneRepo = function(isCloned){
 	return exec(cmd, true)
 }
 
+var removeNodeModules = function(){
+	console.log('$ rm -rf node_modules')
+	return exec('rm -rf node_modules', true)
+}
+
 var npmInstall = function(){
-	console.log('$ npm update')
-	return exec('npm update', true)
+	console.log('$ npm install')
+	return exec('npm install', true)
 }
 
 var installGaston = function(){
-	return exec('npm install gaston')
+	console.log('$ npm install gaston')
+	return exec('npm install gaston', true)
 }
 
 var runTests = function(){
