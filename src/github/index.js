@@ -13,12 +13,14 @@ var github = module.exports = {
 	clone: function(){
 		return checkIfRepoCloned()
 			.then(cloneRepo)
+      .then(changeDir)
+      .then(removeNodeModules)
+      .then(installGaston)
+      .then(changeDirBack)
 	},
-	update: function(){
+	update: function(shouldPull){
 		changeDir()
-		return pullBranch()
-		.then(removeNodeModules)
-		.then(installGaston)
+		return pullBranch(shouldPull)
 		.then(npmInstall)
 		.then(runTests)
 		.then(runBuild)
@@ -48,8 +50,8 @@ var removeNodeModules = function(){
 }
 
 var npmInstall = function(){
-	console.log('$ npm install')
-	return exec('npm install', true)
+	console.log('$ npm install --production')
+	return exec('npm install --production', true)
 }
 
 var installGaston = function(){
@@ -58,14 +60,17 @@ var installGaston = function(){
 }
 
 var runTests = function(){
+  console.log('$ npm run test')
 	return exec('npm run test', true)
 }
 
 var runBuild = function(){
+  console.log('$ npm run build')
 	return exec('npm run build', true)
 }
 
 var runDist = function(){
+  console.log('$ npm run dist')
 	return exec('npm run dist', true)
 }
 
