@@ -14,7 +14,7 @@ var github = module.exports = {
 		return checkIfRepoCloned()
 			.then(cloneRepo)
       .then(changeDir)
-      .then(installGaston)
+      .then(github.updateGaston)
       .then(npmInstall)
 			.then(runTests)
 			.then(runBuild)
@@ -31,7 +31,10 @@ var github = module.exports = {
 		.then(runDist)
 		.then(changeDirBack)
 	},
-	updateGaston: installGaston
+	updateGaston: function(){
+		console.log('$ npm install gaston@latest')
+		return exec('npm install gaston@latest', true)
+	}
 }
 
 var checkIfRepoCloned = function(){
@@ -57,11 +60,6 @@ var removeNodeModules = function(){
 var npmInstall = function(){
 	console.log('$ npm install --production')
 	return exec('npm install --production', true)
-}
-
-var installGaston = function(){
-	console.log('$ npm install gaston@latest')
-	return exec('npm install gaston@latest', true)
 }
 
 var runTests = function(){
