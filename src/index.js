@@ -6,10 +6,12 @@ module.exports = {
 		config = cfg
 		github.init(config)
 		return github.clone()
-			.then(() => github.update(false))
 	},
 	update: function(){
 		return github.update()
-	}
+	},
+  updateGaston: function(){
+    return github.updateGaston()
+  }
 }
 

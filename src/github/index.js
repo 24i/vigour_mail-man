@@ -9,24 +9,29 @@ var github = module.exports = {
 	init: function(cfg){
 		pwd = process.cwd()
 		config = cfg
-	}, 
+	},
 	clone: function(){
 		return checkIfRepoCloned()
 			.then(cloneRepo)
       .then(changeDir)
-      .then(removeNodeModules)
       .then(installGaston)
+      .then(npmInstall)
+			.then(runTests)
+			.then(runBuild)
+			.then(runDist)
       .then(changeDirBack)
 	},
 	update: function(shouldPull){
 		changeDir()
 		return pullBranch(shouldPull)
+		.then(removeNodeModules)
 		.then(npmInstall)
 		.then(runTests)
 		.then(runBuild)
 		.then(runDist)
 		.then(changeDirBack)
-	}
+	},
+	updateGaston: installGaston
 }
 
 var checkIfRepoCloned = function(){
@@ -45,8 +50,8 @@ var cloneRepo = function(isCloned){
 }
 
 var removeNodeModules = function(){
-	console.log('$ rm -rf node_modules')
-	return exec('rm -rf node_modules', true)
+	console.log('$ find ./node_modules -mindepth 1 -name gaston -prune -o -exec rm -rf {} +')
+	return exec('find ./node_modules -mindepth 1 -name gaston -prune -o -exec rm -rf {} +', true)
 }
 
 var npmInstall = function(){
@@ -55,8 +60,8 @@ var npmInstall = function(){
 }
 
 var installGaston = function(){
-	console.log('$ npm install gaston')
-	return exec('npm install gaston', true)
+	console.log('$ npm install gaston@latest')
+	return exec('npm install gaston@latest', true)
 }
 
 var runTests = function(){
