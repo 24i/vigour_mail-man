@@ -7,8 +7,26 @@
     "start": "node index.js",
     "test": "gaston test"
   },
+  "keywords": [
+    "vigour"
+  ],
+  "homepage": "https://github.com/vigour-io/mail-man",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/vigour-io/mail-man.git"
+  },
+  "bugs": {
+    "url": "https://github.com/vigour-io/mail-man/issues"
+  },
   "author": "dev@vigour.io",
-  "license": "ISC",
+  "contributors": [
+    "Andre Padez <andre@vigour.io>",
+    "Shawn Inder <shawn@vigour.io>"
+  ],
+  "license": "MIT",
+  "engines": {
+
+  },
   "dependencies": {
     "npmlog": "^2.0.0",
     "vigour-fs-promised": "^2.0.1"
