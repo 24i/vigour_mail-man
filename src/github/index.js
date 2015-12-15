@@ -1,11 +1,12 @@
 // var path = require('path')
 var fs = require('vigour-fs-promised')
 // var log = require('npmlog')
-var exec = require('../utils/exec')
+var gaston = require('../gaston')
+var spawn = require('vigour-spawn')
 var config
 var pwd
 
-var github = module.exports = {
+module.exports = {
   init: function (cfg) {
     pwd = process.cwd()
     config = cfg
@@ -14,7 +15,7 @@ var github = module.exports = {
     return checkIfRepoCloned()
       .then(cloneRepo)
       .then(changeDir)
-      .then(github.updateGaston)
+      .then(gaston.update)
       .then(npmInstall)
       .then(runTests)
       .then(runBuild)
@@ -30,10 +31,6 @@ var github = module.exports = {
     .then(runBuild)
     .then(runDist)
     .then(changeDirBack)
-  },
-  updateGaston: function () {
-    console.log('$ npm install gaston@latest')
-    return exec('npm install gaston@latest', true)
   }
 }
 
@@ -49,32 +46,32 @@ var cloneRepo = function (isCloned) {
   var branch = config.branch
   var cmd = `git clone --branch=${branch} --depth=10 ${remote} ${config.path}`
   console.log(`$ ${cmd}`)
-  return exec(cmd, true)
+  return spawn(cmd)
 }
 
 var removeNodeModules = function () {
   console.log('$ find ./node_modules -mindepth 1 -name gaston -prune -o -exec rm -rf {} +')
-  return exec('find ./node_modules -mindepth 1 -name gaston -prune -o -exec rm -rf {} +', true)
+  return spawn('find ./node_modules -mindepth 1 -name gaston -prune -o -exec rm -rf {} +')
 }
 
 var npmInstall = function () {
   console.log('$ npm install --production')
-  return exec('npm install --production', true)
+  return spawn('npm install --production')
 }
 
 var runTests = function () {
   console.log('$ npm run test')
-  return exec('npm run test', true)
+  return spawn('npm run test')
 }
 
 var runBuild = function () {
   console.log('$ npm run build')
-  return exec('npm run build', true)
+  return spawn('npm run build')
 }
 
 var runDist = function () {
   console.log('$ npm run dist')
-  return exec('npm run dist', true)
+  return spawn('npm run dist')
 }
 
 var changeDir = function () {
@@ -90,5 +87,5 @@ var changeDirBack = function () {
 var pullBranch = function (shouldPull) {
   var cmd = `git pull origin ${config.branch}`
   console.log(`$ ${cmd}`)
-  return exec(cmd, true)
+  return spawn(cmd)
 }
