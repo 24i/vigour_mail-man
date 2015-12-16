@@ -5,10 +5,8 @@ var gaston = module.exports = {
   update: function () {
     return gaston.getCurrentVersion()
       .then(function (current) {
-        log.info('current', current)
         return gaston.getLatestVersion()
           .then(function (latest) {
-            log.info('latest', latest)
             if (current !== latest) {
               return spawn('npm install -g gaston@' + latest)
             } else {
@@ -21,7 +19,6 @@ var gaston = module.exports = {
   getCurrentVersion: function () {
     return spawn('gaston -v', { getOutput: true })
       .then(function (output) {
-        log.info('output', output)
         return output.split(' ').pop().replace('\n', '')
       }, function (reason) {
         log.info('gaston', 'is not installed')
