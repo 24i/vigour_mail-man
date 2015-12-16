@@ -15,6 +15,7 @@ module.exports = {
     return checkIfRepoCloned()
       .then(cloneRepo)
       .then(changeDir)
+      .then(pullBranch)
       .then(gaston.update)
       .then(npmInstall)
       .then(runTests)
