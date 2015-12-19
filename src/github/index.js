@@ -48,27 +48,22 @@ var cloneRepo = function (isCloned) {
 }
 
 var removeNodeModules = function () {
-  console.log('$ find ./node_modules -mindepth 1 -name gaston -prune -o -exec rm -rf {} +')
   return spawn('find ./node_modules -mindepth 1 -name gaston -prune -o -exec rm -rf {} +')
 }
 
 var npmInstall = function () {
-  console.log('$ npm install --production')
   return spawn('npm install --production')
 }
 
 var runTests = function () {
-  console.log('$ npm run test')
   return spawn('npm run test')
 }
 
 var runBuild = function () {
-  console.log('$ npm run build')
   return spawn('npm run build')
 }
 
 var runDist = function () {
-  console.log('$ npm run dist')
   return spawn('npm run dist')
 }
 
@@ -84,6 +79,5 @@ var changeDirBack = function () {
 
 var pullBranch = function (shouldPull) {
   var cmd = `git pull origin ${config.branch}`
-  console.log(`$ ${cmd}`)
   return spawn(cmd)
 }
