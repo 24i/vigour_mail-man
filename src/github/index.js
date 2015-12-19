@@ -1,7 +1,5 @@
 // var path = require('path')
 var fs = require('vigour-fs-promised')
-// var log = require('npmlog')
-var gaston = require('../gaston')
 var spawn = require('vigour-spawn')
 var config
 var pwd
@@ -16,7 +14,6 @@ module.exports = {
       .then(cloneRepo)
       .then(changeDir)
       .then(pullBranch)
-      .then(gaston.update)
       .then(npmInstall)
       .then(runTests)
       .then(runBuild)
