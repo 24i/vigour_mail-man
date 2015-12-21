@@ -9,8 +9,5 @@ module.exports = {
   },
   update: function () {
     return github.update()
-  },
-  updateGaston: function () {
-    return github.updateGaston()
   }
 }

@@ -1,4 +1,5 @@
 // var path = require('path')
+var log = require('npmlog')
 var fs = require('vigour-fs-promised')
 var spawn = require('vigour-spawn')
 var config
@@ -33,7 +34,7 @@ module.exports = {
 }
 
 var checkIfRepoCloned = function () {
-  console.log('checking if repo is already cloned')
+  log.info('mail-man', 'checking if repo is already cloned')
   return fs.existsAsync(config.path)
 }
 var cloneRepo = function (isCloned) {
@@ -42,8 +43,7 @@ var cloneRepo = function (isCloned) {
   }
   var remote = config.remote
   var branch = config.branch
-  var cmd = `git clone --branch=${branch} --depth=10 ${remote} ${config.path}`
-  console.log(`$ ${cmd}`)
+  var cmd = `git clone --branch=${branch} --depth=1 ${remote} ${config.path}`
   return spawn(cmd)
 }
 
@@ -52,32 +52,46 @@ var removeNodeModules = function () {
 }
 
 var npmInstall = function () {
-  return spawn('npm install --production')
+  return spawn('npm install', { getOutput: true })
+    .then(checkNpmSuccess)
 }
 
 var runTests = function () {
-  return spawn('npm run test')
+  return spawn('npm test', { getOutput: true })
+    .then(checkNpmSuccess)
 }
 
 var runBuild = function () {
-  return spawn('npm run build')
+  return spawn('npm run build', { getOutput: true })
+    .then(checkNpmSuccess)
 }
 
 var runDist = function () {
-  return spawn('npm run dist')
+  return spawn('npm run dist', { getOutput: true })
+    .then(checkNpmSuccess)
 }
 
 var changeDir = function () {
-  console.log(`$ cd ${config.path}`)
+  log.info('$', `cd ${config.path}`)
   return process.chdir(config.path)
 }
 
 var changeDirBack = function () {
-  console.log(`$ cd ${pwd}`)
+  log.info('$', `cd ${pwd}`)
   return process.chdir(pwd)
 }
 
 var pullBranch = function (shouldPull) {
   var cmd = `git pull origin ${config.branch}`
   return spawn(cmd)
+}
+
+function checkNpmSuccess (val) {
+  if (val.indexOf('ERR!') > -1) {
+    var error = new Error('npm command failed')
+    error.logs = val
+    throw error
+  } else {
+    return val
+  }
 }
