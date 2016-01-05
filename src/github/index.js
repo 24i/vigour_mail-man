@@ -1,35 +1,34 @@
-// var path = require('path')
+'use strict'
 var log = require('npmlog')
 var fs = require('vigour-fs-promised')
 var spawn = require('vigour-spawn')
+var npmInstall = require('../npminstall')
+var runTests = require('../runtests')
+var runBuild = require('../runbuild')
+var runDist = require('../rundist')
+
 var config
-var pwd
 
 module.exports = {
   init: function (cfg) {
-    pwd = process.cwd()
     config = cfg
   },
   clone: function () {
     return checkIfRepoCloned()
       .then(cloneRepo)
-      .then(changeDir)
       .then(pullBranch)
-      .then(npmInstall)
-      .then(runTests)
-      .then(runBuild)
-      .then(runDist)
-      .then(changeDirBack)
+      .then(() => { return npmInstall(config.path) })
+      .then(() => { return runTests(config.path) })
+      .then(() => { return runBuild(config.path) })
+      .then(() => { return runDist(config.path) })
   },
   update: function (shouldPull) {
-    changeDir()
     return pullBranch(shouldPull)
     .then(removeNodeModules)
-    .then(npmInstall)
-    .then(runTests)
-    .then(runBuild)
-    .then(runDist)
-    .then(changeDirBack)
+    .then(() => { return npmInstall(config.path) })
+    .then(() => { return runTests(config.path) })
+    .then(() => { return runBuild(config.path) })
+    .then(() => { return runDist(config.path) })
   }
 }
 
@@ -48,50 +47,10 @@ var cloneRepo = function (isCloned) {
 }
 
 var removeNodeModules = function () {
-  return spawn('find ./node_modules -mindepth 1 -name gaston -prune -o -exec rm -rf {} +')
-}
-
-var npmInstall = function () {
-  return spawn('npm install', { getOutput: true })
-    .then(checkNpmSuccess)
-}
-
-var runTests = function () {
-  return spawn('npm test', { getOutput: true })
-    .then(checkNpmSuccess)
-}
-
-var runBuild = function () {
-  return spawn('npm run build', { getOutput: true })
-    .then(checkNpmSuccess)
-}
-
-var runDist = function () {
-  return spawn('npm run dist', { getOutput: true })
-    .then(checkNpmSuccess)
-}
-
-var changeDir = function () {
-  log.info('$', `cd ${config.path}`)
-  return process.chdir(config.path)
-}
-
-var changeDirBack = function () {
-  log.info('$', `cd ${pwd}`)
-  return process.chdir(pwd)
+  return spawn('find ./node_modules -mindepth 1 -name gaston -prune -o -exec rm -rf {} +', config.path)
 }
 
 var pullBranch = function (shouldPull) {
   var cmd = `git pull origin ${config.branch}`
-  return spawn(cmd)
-}
-
-function checkNpmSuccess (val) {
-  if (val.indexOf('ERR!') > -1) {
-    var error = new Error('npm command failed')
-    error.logs = val
-    throw error
-  } else {
-    return val
-  }
+  return spawn(cmd, { cwd: config.path })
 }
