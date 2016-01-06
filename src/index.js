@@ -1,15 +1,17 @@
-var github = require('./github')
-var local = require('./local')
+var Github = require('./github')
+var Local = require('./local')
+var github
+var local
 var config
 
 module.exports = {
   init: function (cfg) {
     config = cfg
     if (cfg.local) {
-      local.init(config)
+      local = new Local(config)
       return local.clone()
     } else {
-      github.init(config)
+      github = new Github(config)
       return github.clone()
     }
   },

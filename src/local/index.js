@@ -1,71 +1,31 @@
-var path = require('path')
-var log = require('npmlog')
-var fs = require('vigour-fs-promised')
-var cpr = require('cpr')
-var npmInstall = require('../npminstall')
-var runTests = require('../runtests')
-var runBuild = require('../runbuild')
-var runDist = require('../rundist')
-var config
+'use strict'
 
-module.exports = {
-  init: function (cfg) {
-    config = cfg
-  },
-  clone: function () {
-    config.localPath = (path.isAbsolute(config.local)
-      ? config.local
-      : path.join(config.cwd, config.local))
-    config.localIgnore = path.join(config.localPath, '.gitignore')
-    return fs.removeAsync(config.path)
-      .then(() => {
-        return fs.readFileAsync(config.localIgnore, 'utf8')
-      })
-      .then((contents) => {
-        var ignored = contents.split('\n').filter((item) => {
-          return item !== ''
-        })
-        log.info('packer-server', 'copying from', config.localPath, 'to', config.path)
-        return copyDir(config.localPath,
-          config.path,
-          { filter: (item) => {
-            var unprefixed = item.slice(config.localPath.length + 1)
-            if (unprefixed.indexOf('.git') === 0) {
-              return false
-            } else {
-              var l = ignored.length
-              var found = false
-              for (var i = 0; i < l && !found; i += 1) {
-                if (unprefixed.indexOf(ignored[i]) === 0) {
-                  found = true
-                }
-              }
-              return !found
-            }
-          }
-        })
-      }, (reason) => {
-        log.info('packer-server', 'copying all files from', config.localPath, 'to', config.path)
-        return copyDir(config.localPath, config.path, {})
-      })
-      .then(() => { return npmInstall(config.path) })
-      .then(() => { return runTests(config.path) })
-      .then(() => { return runBuild(config.path) })
-      .then(() => { return runDist(config.path) })
-  },
-  update: function () {
-    return this.clone()
-  }
+var path = require('path')
+
+module.exports = exports = function (cfg) {
+  this.config = cfg
+  this.config.localPath = (path.isAbsolute(this.config.local)
+    ? this.config.local
+    : path.join(this.config.cwd, this.config.local))
+  this.config.localIgnore = path.join(this.config.localPath, '.gitignore')
 }
 
-function copyDir (src, dst, opts) {
-  return new Promise(function (resolve, reject) {
-    cpr.cpr(src, dst, opts, function (err, files) {
-      if (err) {
-        reject(err)
-      } else {
-        resolve()
-      }
-    })
-  })
+exports.prototype.getLocal = require('./getlocal')
+exports.prototype.remove = require('../remove')
+exports.prototype.npmInstall = require('../npminstall')
+exports.prototype.runTests = require('../runtests')
+exports.prototype.runBuild = require('../runbuild')
+exports.prototype.runDist = require('../rundist')
+
+exports.prototype.clone = function () {
+  return this.remove()
+    .then(this.getLocal.bind(this))
+    .then(this.npmInstall.bind(this))
+    .then(this.runTests.bind(this))
+    .then(this.runBuild.bind(this))
+    .then(this.runDist.bind(this))
+}
+
+exports.prototype.update = function () {
+  return this.clone()
 }
