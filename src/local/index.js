@@ -1,7 +1,7 @@
 var path = require('path')
 var log = require('npmlog')
 var fs = require('vigour-fs-promised')
-var cpr = require('cpr')
+var ncp = require('ncp')
 var npmInstall = require('../npminstall')
 var runTests = require('../runtests')
 var runBuild = require('../runbuild')
@@ -25,28 +25,29 @@ module.exports = {
         var ignored = contents.split('\n').filter((item) => {
           return item !== ''
         })
-        log.info('packer-server', 'copying from', config.localPath, 'to', config.path)
+        log.info('mail-man', 'copying from', config.localPath, 'to', config.path)
         return copyDir(config.localPath,
           config.path,
-          { filter: (item) => {
-            var unprefixed = item.slice(config.localPath.length + 1)
-            if (unprefixed.indexOf('.git') === 0) {
-              return false
-            } else {
-              var l = ignored.length
-              var found = false
-              for (var i = 0; i < l && !found; i += 1) {
-                if (unprefixed.indexOf(ignored[i]) === 0) {
-                  found = true
+          { stopOnError: true,
+            filter: (item) => {
+              var unprefixed = item.slice(config.localPath.length + 1)
+              if (unprefixed.indexOf('.git') === 0) {
+                return false
+              } else {
+                var l = ignored.length
+                var found = false
+                for (var i = 0; i < l && !found; i += 1) {
+                  if (unprefixed.indexOf(ignored[i]) === 0) {
+                    found = true
+                  }
                 }
+                return !found
               }
-              return !found
             }
-          }
-        })
+          })
       }, (reason) => {
-        log.info('packer-server', 'copying all files from', config.localPath, 'to', config.path)
-        return copyDir(config.localPath, config.path, {})
+        log.info('mail-man', 'copying all files from', config.localPath, 'to', config.path)
+        return copyDir(config.localPath, config.path, { stopOnError: true })
       })
       .then(() => { return npmInstall(config.path) })
       .then(() => { return runTests(config.path) })
@@ -60,7 +61,7 @@ module.exports = {
 
 function copyDir (src, dst, opts) {
   return new Promise(function (resolve, reject) {
-    cpr.cpr(src, dst, opts, function (err, files) {
+    ncp.ncp(src, dst, opts, function (err, files) {
       if (err) {
         reject(err)
       } else {
