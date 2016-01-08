@@ -1,56 +1,33 @@
 'use strict'
-var log = require('npmlog')
-var fs = require('vigour-fs-promised')
-var spawn = require('vigour-spawn')
-var npmInstall = require('../npminstall')
-var runTests = require('../runtests')
-var runBuild = require('../runbuild')
-var runDist = require('../rundist')
 
-var config
-
-module.exports = {
-  init: function (cfg) {
-    config = cfg
-  },
-  clone: function () {
-    return checkIfRepoCloned()
-      .then(cloneRepo)
-      .then(pullBranch)
-      .then(() => { return npmInstall(config.path) })
-      .then(() => { return runTests(config.path) })
-      .then(() => { return runBuild(config.path) })
-      .then(() => { return runDist(config.path) })
-  },
-  update: function (shouldPull) {
-    return pullBranch(shouldPull)
-    .then(removeNodeModules)
-    .then(() => { return npmInstall(config.path) })
-    .then(() => { return runTests(config.path) })
-    .then(() => { return runBuild(config.path) })
-    .then(() => { return runDist(config.path) })
-  }
+module.exports = exports = function (cfg) {
+  this.config = cfg
 }
 
-var checkIfRepoCloned = function () {
-  log.info('mail-man', 'checking if repo is already cloned')
-  return fs.existsAsync(config.path)
-}
-var cloneRepo = function (isCloned) {
-  if (isCloned) {
-    return true
-  }
-  var remote = config.remote
-  var branch = config.branch
-  var cmd = `git clone --branch=${branch} --depth=1 ${remote} ${config.path}`
-  return spawn(cmd)
+exports.prototype.checkIfRepoCloned = require('./checkifrepocloned')
+exports.prototype.cloneRepo = require('./clonerepo')
+exports.prototype.pullBranch = require('./pullbranch')
+exports.prototype.removeNodeModules = require('./removenodemodules')
+exports.prototype.npmInstall = require('../npminstall')
+exports.prototype.runTests = require('../runtests')
+exports.prototype.runBuild = require('../runbuild')
+exports.prototype.runDist = require('../rundist')
+
+exports.prototype.clone = function () {
+  return this.checkIfRepoCloned()
+    .then(this.cloneRepo.bind(this))
+    .then(this.pullBranch.bind(this))
+    .then(this.npmInstall.bind(this))
+    .then(this.runTests.bind(this))
+    .then(this.runBuild.bind(this))
+    .then(this.runDist.bind(this))
 }
 
-var removeNodeModules = function () {
-  return spawn('find ./node_modules -mindepth 1 -name gaston -prune -o -exec rm -rf {} +', config.path)
-}
-
-var pullBranch = function (shouldPull) {
-  var cmd = `git pull origin ${config.branch}`
-  return spawn(cmd, { cwd: config.path })
+exports.prototype.update = function (shouldPull) {
+  return this.pullBranch(shouldPull)
+  .then(this.removeNodeModules.bind(this))
+  .then(this.npmInstall.bind(this))
+  .then(this.runTests.bind(this))
+  .then(this.runBuild.bind(this))
+  .then(this.runDist.bind(this))
 }
