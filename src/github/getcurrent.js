@@ -14,4 +14,11 @@ module.exports = exports = function (target) {
     .then(() => {
       return this.state[target].sha
     })
+    .catch((reason) => {
+      if (reason.code === 'ENOENT') {
+        return 'none'
+      } else {
+        throw reason
+      }
+    })
 }
