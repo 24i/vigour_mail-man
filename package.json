@@ -26,6 +26,7 @@
   "license": "MIT",
   "engines": {},
   "dependencies": {
+    "btoa": "^1.1.2",
     "ncp": "^2.0.0",
     "npmlog": "^2.0.0",
     "vigour-fs-promised": "^2.0.1",
@@ -33,5 +34,17 @@
   },
   "devDependencies": {
     "npmlog": "^2.0.0"
+  },
+  "standard": {
+    "globals": [
+      "describe",
+      "it",
+      "expect",
+      "before",
+      "after",
+      "beforeEach",
+      "afterEach",
+      "sinon"
+    ]
   }
 }
