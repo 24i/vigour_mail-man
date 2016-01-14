@@ -33,5 +33,5 @@ exports.prototype.get = function () {
 
 exports.prototype.save = function (state) {
   this.data = state
-  return fs.writeJSONAsync(path.join(this.path, this.filename), this.data)
+  return fs.writeJSONAsync(path.join(this.path, this.filename), this.data, { mkdirp: true })
 }
