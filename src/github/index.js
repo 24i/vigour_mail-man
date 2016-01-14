@@ -19,6 +19,7 @@ module.exports = exports = function (cfg) {
 
 exports.prototype.init = require('./init')
 exports.prototype.update = require('./update')
+exports.prototype.cancelUpdate = require('./cancelupdate')
 exports.prototype.getCurrent = require('./getcurrent')
 exports.prototype.getLatest = require('./getlatest')
 exports.prototype.isLatest = require('./islatest')
