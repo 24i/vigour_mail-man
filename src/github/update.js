@@ -22,13 +22,13 @@ module.exports = exports = function () {
 
       // pull
       prom = prom.then(() => {
-        if (this.state.updating === ts) {
+        if (this.state.updating !== ts) {
           return this.cancelUpdate()
         }
         return this.isLatest(newTarget)
       })
         .then((isLatest) => {
-          if (this.state.updating === ts) {
+          if (this.state.updating !== ts) {
             return this.cancelUpdate()
           }
           if (!isLatest) {
@@ -37,7 +37,7 @@ module.exports = exports = function () {
         })
         // clean
         .then(() => {
-          if (this.state.updating === ts) {
+          if (this.state.updating !== ts) {
             return this.cancelUpdate()
           }
           if (this.state[newTarget].installed &&
@@ -47,7 +47,7 @@ module.exports = exports = function () {
         })
         // install
         .then(() => {
-          if (this.state.updating === ts) {
+          if (this.state.updating !== ts) {
             return this.cancelUpdate()
           }
           if (!this.state[newTarget].installed ||
@@ -57,7 +57,7 @@ module.exports = exports = function () {
         })
         // test
         .then(() => {
-          if (this.state.updating === ts) {
+          if (this.state.updating !== ts) {
             return this.cancelUpdate()
           }
           if (!this.state[newTarget].tested ||
@@ -67,7 +67,7 @@ module.exports = exports = function () {
         })
         // build
         .then(() => {
-          if (this.state.updating === ts) {
+          if (this.state.updating !== ts) {
             return this.cancelUpdate()
           }
           if (!this.state[newTarget].built ||
@@ -77,7 +77,7 @@ module.exports = exports = function () {
         })
         // dist
         .then(() => {
-          if (this.state.updating === ts) {
+          if (this.state.updating !== ts) {
             return this.cancelUpdate()
           }
           if (!this.state[newTarget].disted ||
@@ -87,7 +87,7 @@ module.exports = exports = function () {
         })
         // go live
         .then(() => {
-          if (this.state.updating === ts) {
+          if (this.state.updating !== ts) {
             return this.cancelUpdate()
           }
           this.state.live = newTarget
