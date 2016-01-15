@@ -14,7 +14,7 @@ var github = module.exports = {
 		return checkIfRepoCloned()
 			.then(cloneRepo)
       .then(changeDir)
-      .then(github.updateGaston)
+      // .then(github.updateGaston)
       .then(npmInstall)
 			.then(runTests)
 			.then(runBuild)
