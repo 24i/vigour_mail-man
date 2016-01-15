@@ -58,8 +58,8 @@ var removeNodeModules = function(){
 }
 
 var npmInstall = function(){
-	console.log('$ npm install --production')
-	return exec('npm install --production', true)
+	console.log('$ npm update')
+	return exec('npm update', true)
 }
 
 var runTests = function(){
