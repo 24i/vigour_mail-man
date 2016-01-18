@@ -35,8 +35,11 @@ module.exports = exports = function () {
             return this.pullBranch(newTarget)
           }
         })
-        // clean
-        .then(() => {
+
+      // clean
+      if (this.config.runClean) {
+        console.log('clean', this.config.runClean)
+        prom = prom.then(() => {
           if (this.state.updating !== ts) {
             return this.cancelUpdate()
           }
@@ -45,8 +48,12 @@ module.exports = exports = function () {
             return this.removeNodeModules(newTarget)
           }
         })
-        // install
-        .then(() => {
+      }
+
+      // install
+      if (this.config.runInstall) {
+        console.log('install', this.config.runInstall)
+        prom = prom.then(() => {
           if (this.state.updating !== ts) {
             return this.cancelUpdate()
           }
@@ -55,8 +62,12 @@ module.exports = exports = function () {
             return this.npmInstall(newTarget)
           }
         })
-        // test
-        .then(() => {
+      }
+
+      // test
+      if (this.config.runTest) {
+        console.log('test', this.config.runTest)
+        prom = prom.then(() => {
           if (this.state.updating !== ts) {
             return this.cancelUpdate()
           }
@@ -65,8 +76,12 @@ module.exports = exports = function () {
             return this.runTests(newTarget)
           }
         })
-        // build
-        .then(() => {
+      }
+
+      // build
+      if (this.config.runBuild) {
+        console.log('build', this.config.runBuild)
+        prom = prom.then(() => {
           if (this.state.updating !== ts) {
             return this.cancelUpdate()
           }
@@ -75,8 +90,12 @@ module.exports = exports = function () {
             return this.runBuild(newTarget)
           }
         })
-        // dist
-        .then(() => {
+      }
+
+      // dist
+      if (this.config.runDist) {
+        console.log('dist', this.config.runDist)
+        prom = prom.then(() => {
           if (this.state.updating !== ts) {
             return this.cancelUpdate()
           }
@@ -85,15 +104,17 @@ module.exports = exports = function () {
             return this.runDist(newTarget)
           }
         })
-        // go live
-        .then(() => {
-          if (this.state.updating !== ts) {
-            return this.cancelUpdate()
-          }
-          this.state.live = newTarget
-          this.state[newTarget].live = Date.now()
-          return this.stateManager.save(this.state)
-        })
+      }
+
+      // go live
+      prom = prom.then(() => {
+        if (this.state.updating !== ts) {
+          return this.cancelUpdate()
+        }
+        this.state.live = newTarget
+        this.state[newTarget].live = Date.now()
+        return this.stateManager.save(this.state)
+      })
         .then(() => {
           log.info('mail-man', 'new version ready')
         })
