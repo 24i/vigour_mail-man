@@ -1,6 +1,6 @@
 {
   "name": "mail-man",
-  "version": "0.5.16",
+  "version": "0.5.17",
   "description": "delivers your packages",
   "main": "src/index.js",
   "scripts": {
