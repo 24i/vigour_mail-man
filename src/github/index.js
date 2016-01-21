@@ -9,10 +9,7 @@ module.exports = exports = function (cfg) {
   this.config.apiHeaders = {
     Accept: 'application/vnd.github.v3+json',
     'User-Agent': 'packer-server',
-    Authorization: 'Basic ' +
-      btoa(this.config.gitUsername +
-        ':' +
-        this.config.gitPassword)
+    Authorization: 'Token ' + this.config.apiToken
   }
   this.stateManager = new StateManager(this.config.path)
 }
