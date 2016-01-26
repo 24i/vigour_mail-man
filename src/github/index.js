@@ -14,7 +14,7 @@ module.exports = exports = function (cfg) {
         ':' +
         this.config.gitPassword)
   }
-  this.stateManager = new StateManager(this.config.path)
+  this.stateManager = new StateManager(this.config)
 }
 
 exports.prototype.init = require('./init')

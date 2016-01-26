@@ -3,7 +3,9 @@
 var log = require('npmlog')
 
 module.exports = exports = function () {
-  log.info('mail-man', 'updating')
+  if (this.config.verbose) {
+    log.info('mail-man', 'updating')
+  }
   var ts = Date.now()
   this.state.updating = ts
   return this.stateManager.save(this.state)

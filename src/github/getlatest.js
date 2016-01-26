@@ -1,6 +1,7 @@
 'use strict'
 
 var https = require('https')
+var log = require('npmlog')
 var concat = require('concat-stream')
 
 module.exports = exports = function () {
@@ -13,6 +14,9 @@ module.exports = exports = function () {
         this.config.branch]
           .join('/'),
       headers: this.config.apiHeaders
+    }
+    if (this.config.verbose) {
+      log.info('mail-man', 'getting latest', options)
     }
     var req = https.request(options,
       (res) => {

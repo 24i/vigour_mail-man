@@ -6,7 +6,9 @@ module.exports = exports = function () {
   return this.stateManager.get()
     .then((state) => {
       this.state = state
-      log.info('mail-man', 'state', state)
+      if (this.config.verbose) {
+        log.info('mail-man', 'state', state)
+      }
       var prom = Promise.resolve()
 
       if (this.state.live) {

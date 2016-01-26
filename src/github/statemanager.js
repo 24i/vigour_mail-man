@@ -1,15 +1,20 @@
 'use strict'
 
 var path = require('path')
+var log = require('npmlog')
 var fs = require('vigour-fs-promised')
 
-module.exports = exports = function (pth) {
-  this.path = pth
+module.exports = exports = function (config) {
+  this.path = config.path
+  this.verbose = config.verbose
 }
 
 exports.prototype.filename = 'state.json'
 
 exports.prototype.get = function () {
+  if (this.verbose) {
+    log.info('mail-man', 'getting state')
+  }
   if (this.data) {
     return Promise.resolve(this.data)
   } else {
@@ -32,6 +37,9 @@ exports.prototype.get = function () {
 }
 
 exports.prototype.save = function (state) {
+  if (this.verbose) {
+    log.info('mail-man', 'saving state')
+  }
   this.data = state
   return fs.writeJSONAsync(path.join(this.path, this.filename), this.data, { mkdirp: true })
 }
