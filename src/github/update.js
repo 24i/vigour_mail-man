@@ -113,9 +113,16 @@ module.exports = exports = function () {
         if (this.state.updating !== ts) {
           return this.cancelUpdate()
         }
-        this.state.live = newTarget
-        this.state[newTarget].live = Date.now()
-        return this.stateManager.save(this.state)
+        return this.isLatest(newTarget)
+          .then((isLatest) => {
+            if (isLatest) {
+              this.state.live = newTarget
+              this.state[newTarget].live = Date.now()
+              return this.stateManager.save(this.state)
+            } else {
+              return this.update()
+            }
+          })
       })
         .then((state) => {
           log.info('mail-man', 'new version ready')
