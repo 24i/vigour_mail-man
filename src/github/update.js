@@ -117,8 +117,9 @@ module.exports = exports = function () {
         this.state[newTarget].live = Date.now()
         return this.stateManager.save(this.state)
       })
-        .then(() => {
+        .then((state) => {
           log.info('mail-man', 'new version ready')
+          return state
         })
         // handle errors
         .catch((reason) => {

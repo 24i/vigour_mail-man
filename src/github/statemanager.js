@@ -41,5 +41,8 @@ exports.prototype.save = function (state) {
     log.info('mail-man', 'saving state')
   }
   this.data = state
-  return fs.writeJSONAsync(path.join(this.path, this.filename), this.data, { mkdirp: true })
+  return fs.writeJSONAsync(path.join(this.path, this.filename), state, { mkdirp: true })
+    .then(() => {
+      return state
+    })
 }
