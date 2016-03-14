@@ -1,13 +1,13 @@
 'use strict'
 
-var log = require('npmlog')
+var log = require('../../logger')
 
 module.exports = exports = function () {
   return this.stateManager.get()
     .then((state) => {
       this.state = state
       if (this.config.verbose) {
-        log.info('mail-man', 'state', state)
+        log.info({state: state}, 'state')
       }
       var prom = Promise.resolve()
 

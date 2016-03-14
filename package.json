@@ -27,8 +27,8 @@
   "engines": {},
   "dependencies": {
     "btoa": "^1.1.2",
+    "bunyan": "^1.7.1",
     "ncp": "^2.0.0",
-    "npmlog": "^2.0.0",
     "vigour-fs-promised": "^2.0.1",
     "vigour-spawn": "^1.0.1"
   },

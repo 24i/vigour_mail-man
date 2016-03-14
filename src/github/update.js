@@ -1,10 +1,10 @@
 'use strict'
 
-var log = require('npmlog')
+var log = require('../../logger')
 
 module.exports = exports = function () {
   if (this.config.verbose) {
-    log.info('mail-man', 'updating')
+    log.info('updating')
   }
   var ts = Date.now()
   this.state.updating = ts
@@ -40,7 +40,7 @@ module.exports = exports = function () {
 
       // clean
       if (this.config.runClean) {
-        console.log('clean', this.config.runClean)
+        log.info({runClean: this.config.runClean}, 'clean')
         prom = prom.then(() => {
           if (this.state.updating !== ts) {
             return this.cancelUpdate()
@@ -54,7 +54,7 @@ module.exports = exports = function () {
 
       // install
       if (this.config.runInstall) {
-        console.log('install', this.config.runInstall)
+        log.info({runInstall: this.config.runInstall}, 'install')
         prom = prom.then(() => {
           if (this.state.updating !== ts) {
             return this.cancelUpdate()
@@ -68,7 +68,7 @@ module.exports = exports = function () {
 
       // test
       if (this.config.runTest) {
-        console.log('test', this.config.runTest)
+        log.info({runTest: this.config.runTest}, 'test')
         prom = prom.then(() => {
           if (this.state.updating !== ts) {
             return this.cancelUpdate()
@@ -82,7 +82,7 @@ module.exports = exports = function () {
 
       // build
       if (this.config.runBuild) {
-        console.log('build', this.config.runBuild)
+        log.info({runBuild: this.config.runBuild}, 'build')
         prom = prom.then(() => {
           if (this.state.updating !== ts) {
             return this.cancelUpdate()
@@ -96,7 +96,7 @@ module.exports = exports = function () {
 
       // dist
       if (this.config.runDist) {
-        console.log('dist', this.config.runDist)
+        log.info({runDist: this.config.runDist}, 'dist')
         prom = prom.then(() => {
           if (this.state.updating !== ts) {
             return this.cancelUpdate()
@@ -125,13 +125,13 @@ module.exports = exports = function () {
           })
       })
         .then((state) => {
-          log.info('mail-man', 'new version ready')
+          log.info('new version ready')
           return state
         })
         // handle errors
-        .catch((reason) => {
-          log.error('mail-man: update failed', reason)
-          throw reason
+        .catch((err) => {
+          log.error({err: err}, 'update failed')
+          throw err
         })
       return prom
     })
