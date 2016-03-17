@@ -1,7 +1,7 @@
 'use strict'
 
 var path = require('path')
-var log = require('npmlog')
+var log = require('../../logger')
 var fs = require('vigour-fs-promised')
 
 module.exports = exports = function (config) {
@@ -13,7 +13,7 @@ exports.prototype.filename = 'state.json'
 
 exports.prototype.get = function () {
   if (this.verbose) {
-    log.info('mail-man', 'getting state')
+    log.info('getting state')
   }
   if (this.data) {
     return Promise.resolve(this.data)
@@ -38,7 +38,7 @@ exports.prototype.get = function () {
 
 exports.prototype.save = function (state) {
   if (this.verbose) {
-    log.info('mail-man', 'saving state')
+    log.info('saving state')
   }
   this.data = state
   return fs.writeJSONAsync(path.join(this.path, this.filename), state, { mkdirp: true })

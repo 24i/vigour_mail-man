@@ -1,10 +1,10 @@
 'use strict'
 
-var log = require('npmlog')
+var log = require('../../logger')
 
 module.exports = exports = function () {
   if (this.config.verbose) {
-    log.info('mail-man', 'canceling update')
+    log.info('canceling update')
   }
   var error = new Error('update canceled')
   error.reason = 'another update came in'
